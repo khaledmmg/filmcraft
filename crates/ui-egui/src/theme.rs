@@ -247,10 +247,10 @@ impl Tokens {
                 ..dark
             },
             ThemeKind::Light => Tokens {
-                app_bg: Color32::from_rgb(242, 242, 247),
+                app_bg: Color32::from_rgb(244, 244, 246),
                 header_bg: Color32::from_rgb(250, 250, 252),
                 panel_bg: Color32::from_rgb(255, 255, 255),
-                tab_bg: Color32::from_rgb(245, 245, 247),
+                tab_bg: Color32::from_rgb(241, 241, 244),
                 tab_text: Color32::from_rgb(90, 90, 95),
                 tab_text_active: Color32::from_rgb(20, 20, 25),
                 focus: Color32::from_rgb(10, 132, 255),
@@ -261,29 +261,29 @@ impl Tokens {
                 text_faint: Color32::from_rgb(142, 142, 147),
                 icon: Color32::from_rgb(65, 65, 70),
                 icon_active: Color32::from_rgb(25, 25, 30),
-                hover: Color32::from_rgb(229, 229, 234),
-                pressed: Color32::from_rgb(214, 214, 220),
-                field_bg: Color32::from_rgb(248, 248, 250),
-                field_border: Color32::from_rgb(204, 204, 208),
-                separator: Color32::from_rgb(216, 216, 220),
-                row_alt: Color32::from_rgb(246, 246, 248),
-                row_selected: Color32::from_rgb(222, 235, 255),
+                hover: Color32::from_rgb(236, 236, 240),
+                pressed: Color32::from_rgb(223, 224, 229),
+                field_bg: Color32::from_rgb(247, 247, 248),
+                field_border: Color32::from_rgb(208, 208, 214),
+                separator: Color32::from_rgb(228, 228, 231),
+                row_alt: Color32::from_rgb(249, 249, 250),
+                row_selected: Color32::from_rgb(233, 242, 255),
                 hot_text: Color32::from_rgb(0, 122, 255),
-                pill_active_bg: Color32::from_rgb(228, 234, 244),
-                clip_bar_bg: Color32::from_rgb(200, 218, 248),
-                control_surface: Color32::from_rgb(246, 246, 248),
-                control_well: Color32::from_rgb(238, 238, 242),
-                control_border: Color32::from_rgb(181, 181, 189),
-                control_handle_bg: Color32::from_rgb(215, 215, 220),
+                pill_active_bg: Color32::from_rgb(230, 236, 244),
+                clip_bar_bg: Color32::from_rgb(214, 228, 246),
+                control_surface: Color32::from_rgb(247, 247, 248),
+                control_well: Color32::from_rgb(239, 239, 243),
+                control_border: Color32::from_rgb(201, 201, 208),
+                control_handle_bg: Color32::from_rgb(218, 218, 224),
                 control_handle: Color32::from_rgb(39, 39, 42),
                 control_handle_dim: Color32::from_rgb(94, 94, 100),
-                plot_bg: Color32::from_rgb(250, 250, 252),
-                plot_grid: Color32::from_rgb(226, 226, 232),
-                plot_axis: Color32::from_rgb(200, 200, 208),
+                plot_bg: Color32::from_rgb(252, 252, 253),
+                plot_grid: Color32::from_rgb(232, 232, 234),
+                plot_axis: Color32::from_rgb(204, 204, 210),
                 plot_handle: Color32::from_rgb(50, 50, 54),
                 plot_handle_dim: Color32::from_rgb(95, 95, 101),
                 meter_bg: Color32::from_rgb(235, 235, 240),
-                meter_readout_bg: Color32::from_rgb(247, 247, 249),
+                meter_readout_bg: Color32::from_rgb(249, 249, 251),
                 meter_clip_off: Color32::from_rgb(188, 188, 194),
                 panner_bg: Color32::from_gray(240),
                 panner_border: Color32::from_gray(181),
@@ -307,11 +307,10 @@ impl Tokens {
                 slider_disabled_knob: Color32::from_gray(177),
                 button_hover: Color32::from_gray(234),
                 button_border: Color32::from_gray(196),
-                icon_active: Color32::from_rgb(34, 34, 34),
-                caption_track_bg: Color32::from_rgb(236, 230, 245),
-                scroll_thumb: Color32::from_gray(190),
-                scroll_thumb_hover: Color32::from_gray(160),
-                vertical_scroll_thumb: Color32::from_gray(180),
+                caption_track_bg: Color32::from_rgb(239, 234, 246),
+                scroll_thumb: Color32::from_gray(197),
+                scroll_thumb_hover: Color32::from_gray(170),
+                vertical_scroll_thumb: Color32::from_gray(182),
                 disabled_clip_bg: Color32::from_gray(218),
                 in_out_shade: Color32::from_gray(216),
                 tl_bg: Color32::from_rgb(248, 248, 250),
@@ -322,10 +321,10 @@ impl Tokens {
                 tl_ruler_text: Color32::from_rgb(90, 90, 95),
                 monitor_bg: Color32::from_rgb(255, 255, 255),
                 danger: Color32::from_rgb(255, 69, 58),
-                radius: 12.0,
+                radius: 10.0,
                 radius_sm: 8.0,
-                gap: 8.0,
-                tab_h: 30.0,
+                gap: 6.0,
+                tab_h: 28.0,
                 ..dark
             },
         }
@@ -447,7 +446,7 @@ pub fn apply_visuals(ctx: &egui::Context, t: &Tokens) {
     v.window_stroke = Stroke::new(1.0, t.field_border);
     v.window_corner_radius = egui::CornerRadius::same(t.radius_sm as u8);
     v.menu_corner_radius = egui::CornerRadius::same(t.radius_sm as u8);
-    v.popup_shadow = egui::epaint::Shadow { offset: [0, 4], blur: 16, spread: 0, color: Color32::from_black_alpha(140) };
+    v.popup_shadow = egui::epaint::Shadow { offset: [0, 3], blur: 12, spread: 0, color: Color32::from_black_alpha(110) };
     v.window_shadow = v.popup_shadow;
     for w in [&mut v.widgets.noninteractive, &mut v.widgets.inactive, &mut v.widgets.hovered, &mut v.widgets.active, &mut v.widgets.open] {
         w.corner_radius = egui::CornerRadius::same(t.radius_sm as u8);
@@ -472,8 +471,8 @@ pub fn apply_visuals(ctx: &egui::Context, t: &Tokens) {
     ctx.set_visuals(v);
     ctx.global_style_mut(|s| {
         s.spacing.item_spacing = egui::vec2(6.0, 4.0);
-        s.spacing.button_padding = egui::vec2(8.0, 5.0);
-        s.spacing.interact_size.y = 28.0;
+        s.spacing.button_padding = egui::vec2(8.0, 6.0);
+        s.spacing.interact_size.y = 30.0;
         s.spacing.menu_margin = egui::Margin::same(4);
         s.text_styles.insert(TextStyle::Body, FontId::new(12.0, FontFamily::Proportional));
         s.text_styles.insert(TextStyle::Button, FontId::new(12.0, FontFamily::Proportional));
@@ -484,7 +483,7 @@ pub fn apply_visuals(ctx: &egui::Context, t: &Tokens) {
     });
 }
 
-pub const ANIMATION_TIME: f32 = 0.12;
+pub const ANIMATION_TIME: f32 = 0.08;
 
 #[cfg(test)]
 mod tests {
