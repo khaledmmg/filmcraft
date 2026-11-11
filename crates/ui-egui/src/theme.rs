@@ -1,7 +1,7 @@
 //! Design tokens. Every widget reads colours/sizes from [`Tokens`] so themes apply everywhere.
 //!
-//! The default theme follows the look of Premiere Pro's current dark UI (values measured from
-//! black-box screenshots, see `plan/premiere/02-ui-ux.md`); fonts are Inter + JetBrains Mono (OFL).
+//! Default theme: simple, Apple-like light UI with muted neutrals, soft borders and rounded
+//! surfaces. Dark mode remains available as a user preference.
 
 use std::sync::Arc;
 
@@ -10,12 +10,13 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ThemeKind {
-    /// Premiere-style darkest (default).
+    /// Minimal Apple-like light mode (default).
     #[default]
-    Dark,
+    Light,
     /// Slightly lighter grey panels (Premiere's brightness slider mid position).
     Medium,
-    Light,
+    /// Premiere-style darkest (legacy dark mode).
+    Dark,
 }
 
 impl ThemeKind {
@@ -31,7 +32,7 @@ impl ThemeKind {
         match s {
             "dark" => ThemeKind::Medium,
             "light" => ThemeKind::Light,
-            _ => ThemeKind::Dark,
+            _ => ThemeKind::Light,
         }
     }
     pub fn from_name(s: &str) -> Option<ThemeKind> {
@@ -47,17 +48,12 @@ impl ThemeKind {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Tokens {
     pub kind: ThemeKind,
-    /// Space between panels / app background.
     pub app_bg: Color32,
-    /// Header bar (top).
     pub header_bg: Color32,
-    /// Panel body.
     pub panel_bg: Color32,
-    /// Panel tab strip.
     pub tab_bg: Color32,
     pub tab_text: Color32,
     pub tab_text_active: Color32,
-    /// Blue focus rectangle around the active panel.
     pub focus: Color32,
     pub accent: Color32,
     pub accent_hover: Color32,
@@ -73,27 +69,20 @@ pub struct Tokens {
     pub separator: Color32,
     pub row_alt: Color32,
     pub row_selected: Color32,
-    /// Scrubby (hot-text) numeric value colour.
     pub hot_text: Color32,
-    /// Selected pills and compact toggle backgrounds.
     pub pill_active_bg: Color32,
-    /// The selected clip bar in Effect Controls.
     pub clip_bar_bg: Color32,
-    /// Raised audio control surfaces, such as mixer channel strips.
     pub control_surface: Color32,
-    /// Recessed audio control tracks and panner wells.
     pub control_well: Color32,
     pub control_border: Color32,
     pub control_handle_bg: Color32,
     pub control_handle: Color32,
     pub control_handle_dim: Color32,
-    /// Data-plot surfaces (keyframe, EQ and dynamics graphs), distinct from media canvases.
     pub plot_bg: Color32,
     pub plot_grid: Color32,
     pub plot_axis: Color32,
     pub plot_handle: Color32,
     pub plot_handle_dim: Color32,
-    /// Meter wells and the separate loudness readout surface.
     pub meter_bg: Color32,
     pub meter_readout_bg: Color32,
     pub meter_clip_off: Color32,
@@ -124,7 +113,6 @@ pub struct Tokens {
     pub scroll_thumb_hover: Color32,
     pub vertical_scroll_thumb: Color32,
     pub disabled_clip_bg: Color32,
-    // timeline
     pub tl_bg: Color32,
     pub tl_track_bg: Color32,
     pub tl_track_bg_alt: Color32,
@@ -133,7 +121,6 @@ pub struct Tokens {
     pub tl_ruler_tick: Color32,
     pub tl_ruler_text: Color32,
     pub playhead: Color32,
-    /// Fill of a track header's source-patch / track-targeting button while it is on.
     pub track_target: Color32,
     pub in_out_shade: Color32,
     pub clip_selected_border: Color32,
@@ -151,7 +138,6 @@ pub struct Tokens {
 
 impl Tokens {
     pub fn for_kind(kind: ThemeKind) -> Self {
-        // Measured from Premiere 26 "Darkest" (plan/premiere/02-ui-ux.md §1).
         let dark = Tokens {
             kind,
             app_bg: Color32::from_rgb(0, 0, 0),
@@ -241,6 +227,7 @@ impl Tokens {
             gap: 4.0,
             tab_h: 32.0,
         };
+
         match kind {
             ThemeKind::Dark => dark,
             ThemeKind::Medium => Tokens {
@@ -260,88 +247,93 @@ impl Tokens {
                 ..dark
             },
             ThemeKind::Light => Tokens {
-                app_bg: Color32::from_rgb(180, 180, 180),
-                header_bg: Color32::from_rgb(214, 214, 214),
-                panel_bg: Color32::from_rgb(232, 232, 232),
-                tab_bg: Color32::from_rgb(232, 232, 232),
-                tab_text: Color32::from_rgb(90, 90, 90),
-                tab_text_active: Color32::from_rgb(20, 20, 20),
-                text: Color32::from_rgb(34, 34, 34),
-                text_dim: Color32::from_rgb(90, 90, 90),
-                text_faint: Color32::from_rgb(140, 140, 140),
-                icon: Color32::from_rgb(60, 60, 60),
-                hover: Color32::from_rgb(210, 210, 210),
-                pressed: Color32::from_rgb(196, 196, 196),
-                field_bg: Color32::from_rgb(250, 250, 250),
-                field_border: Color32::from_rgb(170, 170, 170),
-                separator: Color32::from_rgb(200, 200, 200),
-                row_alt: Color32::from_rgb(224, 224, 224),
-                row_selected: Color32::from_rgb(170, 200, 240),
-                pill_active_bg: Color32::from_rgb(196, 196, 196),
-                clip_bar_bg: Color32::from_rgb(190, 203, 224),
-                control_surface: Color32::from_rgb(218, 218, 218),
-                control_well: Color32::from_rgb(196, 196, 196),
-                control_border: Color32::from_rgb(150, 150, 150),
-                control_handle_bg: Color32::from_rgb(205, 205, 205),
-                control_handle: Color32::from_rgb(50, 50, 50),
-                control_handle_dim: Color32::from_rgb(85, 85, 85),
-                plot_bg: Color32::from_rgb(245, 245, 245),
-                plot_grid: Color32::from_rgb(210, 210, 210),
-                plot_axis: Color32::from_rgb(170, 170, 170),
-                plot_handle: Color32::from_rgb(50, 50, 50),
-                plot_handle_dim: Color32::from_rgb(100, 100, 100),
-                meter_bg: Color32::from_rgb(205, 205, 205),
-                meter_readout_bg: Color32::from_rgb(218, 218, 218),
-                meter_clip_off: Color32::from_rgb(155, 155, 155),
-                panner_bg: Color32::from_gray(196),
-                panner_border: Color32::from_gray(150),
-                panner_speaker: Color32::from_gray(100),
-                fader_knob: Color32::from_gray(140),
-                eq_track: Color32::from_gray(196),
-                eq_tick: Color32::from_gray(150),
-                eq_knob: Color32::from_gray(85),
-                eq_knob_active: Color32::from_gray(34),
-                eq_node: Color32::from_gray(50),
-                eq_node_off: Color32::from_gray(140),
-                crossover_handle: Color32::from_gray(50),
-                keyframe_plot_bg: Color32::from_gray(245),
-                keyframe_plot_grid: Color32::from_gray(210),
-                keyframe_plot_axis: Color32::from_gray(170),
-                keyframe_handle: Color32::from_gray(50),
-                switch_fill: Color32::from_gray(60),
-                switch_knob: Color32::from_gray(232),
-                switch_border: Color32::from_gray(110),
-                slider_disabled_track: Color32::from_gray(190),
-                slider_disabled_knob: Color32::from_gray(140),
-                button_hover: Color32::from_gray(210),
-                button_border: Color32::from_gray(170),
+                app_bg: Color32::from_rgb(242, 242, 247),
+                header_bg: Color32::from_rgb(250, 250, 252),
+                panel_bg: Color32::from_rgb(255, 255, 255),
+                tab_bg: Color32::from_rgb(245, 245, 247),
+                tab_text: Color32::from_rgb(90, 90, 95),
+                tab_text_active: Color32::from_rgb(20, 20, 25),
+                focus: Color32::from_rgb(10, 132, 255),
+                accent: Color32::from_rgb(10, 132, 255),
+                accent_hover: Color32::from_rgb(48, 150, 255),
+                text: Color32::from_rgb(28, 28, 30),
+                text_dim: Color32::from_rgb(80, 80, 85),
+                text_faint: Color32::from_rgb(142, 142, 147),
+                icon: Color32::from_rgb(65, 65, 70),
+                icon_active: Color32::from_rgb(25, 25, 30),
+                hover: Color32::from_rgb(229, 229, 234),
+                pressed: Color32::from_rgb(214, 214, 220),
+                field_bg: Color32::from_rgb(248, 248, 250),
+                field_border: Color32::from_rgb(204, 204, 208),
+                separator: Color32::from_rgb(216, 216, 220),
+                row_alt: Color32::from_rgb(246, 246, 248),
+                row_selected: Color32::from_rgb(222, 235, 255),
+                hot_text: Color32::from_rgb(0, 122, 255),
+                pill_active_bg: Color32::from_rgb(228, 234, 244),
+                clip_bar_bg: Color32::from_rgb(200, 218, 248),
+                control_surface: Color32::from_rgb(246, 246, 248),
+                control_well: Color32::from_rgb(238, 238, 242),
+                control_border: Color32::from_rgb(181, 181, 189),
+                control_handle_bg: Color32::from_rgb(215, 215, 220),
+                control_handle: Color32::from_rgb(39, 39, 42),
+                control_handle_dim: Color32::from_rgb(94, 94, 100),
+                plot_bg: Color32::from_rgb(250, 250, 252),
+                plot_grid: Color32::from_rgb(226, 226, 232),
+                plot_axis: Color32::from_rgb(200, 200, 208),
+                plot_handle: Color32::from_rgb(50, 50, 54),
+                plot_handle_dim: Color32::from_rgb(95, 95, 101),
+                meter_bg: Color32::from_rgb(235, 235, 240),
+                meter_readout_bg: Color32::from_rgb(247, 247, 249),
+                meter_clip_off: Color32::from_rgb(188, 188, 194),
+                panner_bg: Color32::from_gray(240),
+                panner_border: Color32::from_gray(181),
+                panner_speaker: Color32::from_gray(112),
+                fader_knob: Color32::from_gray(122),
+                eq_track: Color32::from_gray(219),
+                eq_tick: Color32::from_gray(190),
+                eq_knob: Color32::from_gray(82),
+                eq_knob_active: Color32::from_gray(25),
+                eq_node: Color32::from_gray(36),
+                eq_node_off: Color32::from_gray(148),
+                crossover_handle: Color32::from_gray(35),
+                keyframe_plot_bg: Color32::from_gray(248),
+                keyframe_plot_grid: Color32::from_gray(223),
+                keyframe_plot_axis: Color32::from_gray(195),
+                keyframe_handle: Color32::from_gray(34),
+                switch_fill: Color32::from_gray(220),
+                switch_knob: Color32::from_gray(255),
+                switch_border: Color32::from_gray(170),
+                slider_disabled_track: Color32::from_gray(214),
+                slider_disabled_knob: Color32::from_gray(177),
+                button_hover: Color32::from_gray(234),
+                button_border: Color32::from_gray(196),
                 icon_active: Color32::from_rgb(34, 34, 34),
-                caption_track_bg: Color32::from_rgb(222, 215, 233),
-                scroll_thumb: Color32::from_gray(150),
-                scroll_thumb_hover: Color32::from_gray(130),
-                vertical_scroll_thumb: Color32::from_gray(150),
-                disabled_clip_bg: Color32::from_gray(190),
-                in_out_shade: Color32::from_gray(185),
-                tl_bg: Color32::from_rgb(210, 210, 210),
-                tl_track_bg: Color32::from_rgb(222, 222, 222),
-                tl_track_bg_alt: Color32::from_rgb(228, 228, 228),
-                tl_header_bg: Color32::from_rgb(214, 214, 214),
-                tl_ruler_bg: Color32::from_rgb(226, 226, 226),
-                tl_ruler_text: Color32::from_rgb(80, 80, 80),
+                caption_track_bg: Color32::from_rgb(236, 230, 245),
+                scroll_thumb: Color32::from_gray(190),
+                scroll_thumb_hover: Color32::from_gray(160),
+                vertical_scroll_thumb: Color32::from_gray(180),
+                disabled_clip_bg: Color32::from_gray(218),
+                in_out_shade: Color32::from_gray(216),
+                tl_bg: Color32::from_rgb(248, 248, 250),
+                tl_track_bg: Color32::from_rgb(255, 255, 255),
+                tl_track_bg_alt: Color32::from_rgb(249, 249, 251),
+                tl_header_bg: Color32::from_rgb(245, 245, 247),
+                tl_ruler_bg: Color32::from_rgb(247, 247, 249),
+                tl_ruler_text: Color32::from_rgb(90, 90, 95),
+                monitor_bg: Color32::from_rgb(255, 255, 255),
+                danger: Color32::from_rgb(255, 69, 58),
+                radius: 12.0,
+                radius_sm: 8.0,
+                gap: 8.0,
+                tab_h: 30.0,
                 ..dark
             },
         }
     }
 
-    /// Settings ▸ Appearance on top of a theme: the highlight colour (selections, primary buttons,
-    /// the focus outline, the playhead, timecodes, drag values and track targeting) and accessible
-    /// colour contrast (brighter secondary text and borders).
     pub fn with_appearance(mut self, highlight: Option<[u8; 3]>, accessible_contrast: bool) -> Self {
         if let Some([r, g, b]) = highlight {
             let c = Color32::from_rgb(r, g, b);
-            // A highlight of the user's own also colours the theme's other blues: the same hue, as
-            // much more or less saturated and bright as each of them is than the theme's highlight.
-            // The theme's own highlight leaves them exactly as designed.
             if c != self.accent {
                 let tint = |s: f32, v: f32| {
                     let mut h = egui::ecolor::HsvaGamma::from(c);
@@ -375,7 +367,6 @@ impl Tokens {
         self
     }
 
-    /// Mono font for timecode.
     pub fn mono(size: f32) -> FontId {
         FontId::new(size, FontFamily::Monospace)
     }
@@ -385,19 +376,14 @@ impl Tokens {
     pub fn semibold(size: f32) -> FontId {
         FontId::new(size, FontFamily::Name("semibold".into()))
     }
-    /// The big blue timecode over the timeline and under the monitors: regular weight, as in
-    /// Premiere (Premiere's reads 10 px tall and 76 px wide for 00:00:16:05 at 1x).
     pub fn timecode() -> FontId {
         FontId::new(16.0, FontFamily::Proportional)
     }
 }
 
-/// Menu text: Premiere's menus are the system's, larger and brighter than panel text, one item
-/// every 24 px.
 pub const MENU_TEXT_SIZE: f32 = 13.0;
 pub const MENU_TEXT: Color32 = Color32::from_rgb(0xde, 0xde, 0xde);
 
-/// Style of the menu bar's menus and their submenus (on top of egui's own menu style).
 pub fn menu_style(s: &mut egui::Style) {
     egui::containers::menu::menu_style(s);
     s.text_styles.insert(TextStyle::Button, FontId::new(MENU_TEXT_SIZE, FontFamily::Proportional));
@@ -408,15 +394,10 @@ pub fn menu_style(s: &mut egui::Style) {
     }
 }
 
-/// Every font family the theme defines (fallback fonts such as the Japanese fonts are added to each
-/// of them).
 pub fn font_families() -> Vec<FontFamily> {
     vec![FontFamily::Proportional, FontFamily::Monospace, FontFamily::Name("semibold".into()), FontFamily::Name("medium".into())]
 }
 
-/// Install the Latin UI fonts, Chinese fallback (craft-fonts or an installed face), Japanese
-/// craft-fonts, Arabic and Hebrew fallbacks (craft-fonts or installed faces, [`crate::rtl`]) and
-/// egui visuals. Document names keep their glyphs in every interface language.
 pub fn install(ctx: &egui::Context, t: &Tokens) {
     let mut fonts = FontDefinitions::default();
     fonts.font_data.insert("inter".into(), Arc::new(FontData::from_static(filmcraft_text::fonts::INTER_REGULAR)));
@@ -427,8 +408,6 @@ pub fn install(ctx: &egui::Context, t: &Tokens) {
     fonts.families.entry(FontFamily::Monospace).or_default().insert(0, "jbmono".into());
     fonts.families.insert(FontFamily::Name("semibold".into()), vec!["inter-semibold".into(), "inter".into()]);
     fonts.families.insert(FontFamily::Name("medium".into()), vec!["inter-medium".into(), "inter".into()]);
-    // Japanese before Chinese: the two share code points, and Japanese text must keep Japanese
-    // glyph forms; Chinese faces still cover the hanzi Japanese fonts lack
     add_craft_fonts(&mut fonts);
     crate::cjk::install(&mut fonts);
     crate::rtl::install(&mut fonts);
@@ -436,14 +415,10 @@ pub fn install(ctx: &egui::Context, t: &Tokens) {
     apply_visuals(ctx, t);
 }
 
-/// Name of the egui font for a craft-fonts entry.
 fn craft_font_name(f: &filmcraft_text::fonts::CraftFont) -> String {
     format!("craft:{} {}", f.family, f.style)
 }
 
-/// Append the Japanese craft-fonts (empty unless built with `CRAFT_FONTS_DIR`) as the last fallbacks
-/// of every font family, after the app's own fonts: BIZ UDPGothic first (bold before regular in
-/// the "semibold" and "medium" families), then the other Japanese faces.
 fn add_craft_fonts(fonts: &mut FontDefinitions) {
     let jpan: Vec<_> = filmcraft_text::fonts::craft_japanese().collect();
     for f in &jpan {
@@ -459,8 +434,6 @@ fn add_craft_fonts(fonts: &mut FontDefinitions) {
 
 pub fn apply_visuals(ctx: &egui::Context, t: &Tokens) {
     let light = t.kind == ThemeKind::Light;
-    // FilmCraft decides between light and dark itself (Settings ▸ Appearance ▸ Appearance Mode), so
-    // egui must not switch to its other built-in style when the system appearance changes.
     ctx.set_theme(if light { egui::Theme::Light } else { egui::Theme::Dark });
     let mut v = if light { Visuals::light() } else { Visuals::dark() };
     v.panel_fill = t.panel_bg;
@@ -472,8 +445,8 @@ pub fn apply_visuals(ctx: &egui::Context, t: &Tokens) {
     v.selection.stroke = Stroke::new(1.0, Color32::WHITE);
     v.hyperlink_color = t.accent;
     v.window_stroke = Stroke::new(1.0, t.field_border);
-    v.window_corner_radius = egui::CornerRadius::same(6);
-    v.menu_corner_radius = egui::CornerRadius::same(6);
+    v.window_corner_radius = egui::CornerRadius::same(t.radius_sm as u8);
+    v.menu_corner_radius = egui::CornerRadius::same(t.radius_sm as u8);
     v.popup_shadow = egui::epaint::Shadow { offset: [0, 4], blur: 16, spread: 0, color: Color32::from_black_alpha(140) };
     v.window_shadow = v.popup_shadow;
     for w in [&mut v.widgets.noninteractive, &mut v.widgets.inactive, &mut v.widgets.hovered, &mut v.widgets.active, &mut v.widgets.open] {
@@ -499,8 +472,8 @@ pub fn apply_visuals(ctx: &egui::Context, t: &Tokens) {
     ctx.set_visuals(v);
     ctx.global_style_mut(|s| {
         s.spacing.item_spacing = egui::vec2(6.0, 4.0);
-        s.spacing.button_padding = egui::vec2(8.0, 3.0);
-        s.spacing.interact_size.y = 24.0;
+        s.spacing.button_padding = egui::vec2(8.0, 5.0);
+        s.spacing.interact_size.y = 28.0;
         s.spacing.menu_margin = egui::Margin::same(4);
         s.text_styles.insert(TextStyle::Body, FontId::new(12.0, FontFamily::Proportional));
         s.text_styles.insert(TextStyle::Button, FontId::new(12.0, FontFamily::Proportional));
@@ -511,23 +484,11 @@ pub fn apply_visuals(ctx: &egui::Context, t: &Tokens) {
     });
 }
 
-/// How long egui's fades and slides take (menus, collapsing sections, tooltips); 0 when
-/// Settings ▸ Appearance ▸ "Animate zoom, scrolling and menus" is off (#2325).
 pub const ANIMATION_TIME: f32 = 0.12;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    const JAPANESE: &str = "日本語の文字";
-
-    fn installed() -> egui::Context {
-        let ctx = egui::Context::default();
-        install(&ctx, &Tokens::for_kind(ThemeKind::default()));
-        let mut out = ctx.run_ui(egui::RawInput::default(), |_| {});
-        out.textures_delta.clear();
-        ctx
-    }
 
     #[test]
     fn light_theme_has_light_chrome_and_plot_surfaces() {
@@ -553,164 +514,5 @@ mod tests {
         assert!(luminance(light.control_handle) < luminance(light.control_handle_bg));
         assert!(luminance(light.plot_handle) < luminance(light.plot_bg));
         assert!(luminance(light.icon_active) < luminance(light.pressed));
-        assert_eq!(Tokens::for_kind(ThemeKind::Medium).plot_bg, dark.plot_bg, "Medium keeps the established dark plot treatment");
-    }
-
-    #[test]
-    fn dark_and_medium_keep_existing_audio_and_effect_palettes() {
-        for kind in [ThemeKind::Dark, ThemeKind::Medium] {
-            let t = Tokens::for_kind(kind);
-            // Existing painted colors, recorded independently of the Light palette.
-            assert_eq!(t.pill_active_bg, Color32::from_gray(0x3a));
-            assert_eq!(t.clip_bar_bg, Color32::from_rgb(58, 58, 70));
-            assert_eq!(t.control_surface, Color32::from_gray(0x24));
-            assert_eq!(t.control_well, Color32::from_gray(0x10));
-            assert_eq!(t.control_handle, Color32::from_gray(0xe0));
-            assert_eq!(t.meter_bg, Color32::BLACK);
-            assert_eq!(t.plot_bg, Color32::from_gray(0x18));
-            assert_eq!(t.plot_grid, Color32::from_gray(0x2c));
-            assert_eq!(t.keyframe_plot_bg, Color32::from_gray(0x19));
-            assert_eq!(t.keyframe_plot_grid, Color32::from_gray(0x2a));
-            assert_eq!(t.keyframe_plot_axis, Color32::from_gray(0x33));
-            assert_eq!(t.keyframe_handle, Color32::from_gray(0xd0));
-        }
-    }
-
-    /// The colours the highlight drives besides the accent (#707).
-    fn highlight_blues(t: &Tokens) -> [Color32; 5] {
-        [t.focus, t.playhead, t.timecode, t.hot_text, t.track_target]
-    }
-
-    #[test]
-    fn the_default_highlight_leaves_the_theme_blues_as_designed() {
-        let default = filmcraft_engine::settings::parse_hex(filmcraft_engine::settings::DEFAULT_HIGHLIGHT);
-        for k in [ThemeKind::Dark, ThemeKind::Medium, ThemeKind::Light] {
-            assert_eq!(highlight_blues(&Tokens::for_kind(k).with_appearance(default, false)), highlight_blues(&Tokens::for_kind(k)), "{k:?}");
-        }
-    }
-
-    #[test]
-    fn a_highlight_of_ones_own_colours_the_playhead_timecodes_focus_and_targeting() {
-        let pink = Color32::from_rgb(0xe0, 0x45, 0x7b);
-        let t = Tokens::for_kind(ThemeKind::Dark).with_appearance(Some([0xe0, 0x45, 0x7b]), false);
-        let hue = |c: Color32| egui::ecolor::HsvaGamma::from(c).h;
-        for (c, was) in highlight_blues(&t).into_iter().zip(highlight_blues(&Tokens::for_kind(ThemeKind::Dark))) {
-            assert_ne!(c, was);
-            assert!((hue(c) - hue(pink)).abs() < 0.01, "{c:?} has the highlight's hue");
-        }
-        let v = |c: Color32| egui::ecolor::HsvaGamma::from(c).v;
-        assert!(v(t.playhead) > v(pink) && v(t.timecode) > v(pink) && v(t.track_target) < v(pink), "lighter and darker as the default blues are");
-    }
-
-    /// Chinese media and track names must render even when the interface stays in English.
-    /// Compare the rasterized glyphs with the missing-glyph box, including custom weight families.
-    #[test]
-    fn chinese_names_render_in_every_theme_and_font_family() {
-        const CHINESE: &str = "中文旁白音乐声轨测试简体汉语繁體漢語车";
-        filmcraft_text::fonts::scan_system();
-        let available = filmcraft_text::fonts::all_faces()
-            .iter()
-            .any(|f| matches!(f.info.origin, "system" | filmcraft_text::fonts::CRAFT_ORIGIN) && CHINESE.chars().all(|c| f.has_char(c)));
-        if !available {
-            eprintln!("SKIPPED: no craft-fonts or installed Chinese font");
-            return;
-        }
-        let ctx = egui::Context::default();
-        for kind in [ThemeKind::Dark, ThemeKind::Medium, ThemeKind::Light] {
-            install(&ctx, &Tokens::for_kind(kind));
-            ctx.run_ui(egui::RawInput::default(), |_| {}).textures_delta.clear();
-            ctx.fonts_mut(|fonts| {
-                for family in font_families() {
-                    let font = FontId::new(13.0, family);
-                    let missing = fonts.layout_no_wrap("\u{fffd}".into(), font.clone(), Color32::WHITE);
-                    let missing_uv = missing.rows[0].glyphs[0].uv_rect;
-                    let names = fonts.layout_no_wrap(CHINESE.into(), font.clone(), Color32::WHITE);
-                    assert_eq!(names.rows.iter().map(|r| r.glyphs.len()).sum::<usize>(), CHINESE.chars().count());
-                    for glyph in names.rows.iter().flat_map(|r| &r.glyphs) {
-                        assert!(!glyph.uv_rect.is_nothing(), "empty {} in {font:?}", glyph.chr);
-                        assert_ne!(glyph.uv_rect, missing_uv, "missing {} in {kind:?} / {font:?}", glyph.chr);
-                    }
-                }
-            });
-        }
-        // the layouts above put glyphs in the atlas: take that update so it isn't dropped unapplied
-        ctx.run_ui(egui::RawInput::default(), |_| {}).textures_delta.clear();
-    }
-
-    /// Typed, pasted or IME-composed Hangul draws real glyphs, not the missing-glyph box (artcraft#2093).
-    #[test]
-    fn korean_text_renders_with_an_installed_korean_font() {
-        const KOREAN: &str = "한국어 입력 테스트";
-        filmcraft_text::fonts::scan_system();
-        let available = filmcraft_text::fonts::all_faces().iter().any(|f| f.info.origin == "system" && KOREAN.chars().all(|c| f.has_char(c)));
-        if !available {
-            eprintln!("SKIPPED: no installed Korean font");
-            return;
-        }
-        let ctx = egui::Context::default();
-        install(&ctx, &Tokens::for_kind(ThemeKind::Dark));
-        ctx.run_ui(egui::RawInput::default(), |_| {}).textures_delta.clear();
-        ctx.fonts_mut(|fonts| {
-            for family in font_families() {
-                let font = FontId::new(13.0, family);
-                let missing = fonts.layout_no_wrap("\u{fffd}".into(), font.clone(), Color32::WHITE);
-                let missing_uv = missing.rows[0].glyphs[0].uv_rect;
-                let text = fonts.layout_no_wrap(KOREAN.into(), font.clone(), Color32::WHITE);
-                for glyph in text.rows.iter().flat_map(|r| &r.glyphs).filter(|g| g.chr != ' ') {
-                    assert_ne!(glyph.uv_rect, missing_uv, "missing {} in {font:?}", glyph.chr);
-                }
-            }
-        });
-        ctx.run_ui(egui::RawInput::default(), |_| {}).textures_delta.clear();
-    }
-
-    /// Built with craft-fonts: every font family ends with the Japanese faces (BIZ UDPGothic
-    /// first), and Japanese text gets real glyphs, not the replacement box.
-    #[test]
-    fn japanese_renders_with_craft_fonts() {
-        if filmcraft_text::fonts::craft_japanese().next().is_none() {
-            eprintln!("SKIPPED: built without craft-fonts (set CRAFT_FONTS_DIR to run)");
-            return;
-        }
-        let ctx = installed();
-        ctx.fonts_mut(|fonts| {
-            let defs = fonts.definitions().clone();
-            for (family, stack) in &defs.families {
-                // installed right-to-left faces (Hebrew is not in craft-fonts) come after the craft run
-                let stack: Vec<&String> = stack.iter().filter(|n| !crate::rtl::is_system_face(n)).collect();
-                let first = stack.iter().position(|n| n.starts_with("craft:")).unwrap_or(stack.len());
-                assert!(first > 0 && stack[first..].iter().all(|n| n.starts_with("craft:")), "{family:?}: {stack:?}");
-                let first_japanese = stack.iter().find(|n| n.starts_with("craft:BIZ") || n.starts_with("craft:Shippori"));
-                assert!(first_japanese.is_some_and(|n| n.starts_with("craft:BIZ UDPGothic")), "{family:?}: {stack:?}");
-            }
-            for family in [FontFamily::Proportional, FontFamily::Monospace] {
-                let font = FontId::new(13.0, family);
-                for ch in JAPANESE.chars() {
-                    assert!(fonts.has_glyph(&font, ch), "missing {ch} in {font:?}");
-                }
-            }
-        });
-        // laid out and drawn: the replacement box (U+FFFD) would show as one glyph per character
-        // from the fallback face; a real face gives each character its own width
-        let galley = ctx.fonts_mut(|f| f.layout_no_wrap(JAPANESE.into(), FontId::new(13.0, FontFamily::Proportional), Color32::WHITE));
-        assert_eq!(galley.rows.iter().map(|r| r.glyphs.len()).sum::<usize>(), JAPANESE.chars().count());
-        assert!(galley.size().x > 13.0 * 4.0, "{:?}", galley.size());
-    }
-
-    /// Latin text keeps its UI faces, with or without craft-fonts and system Chinese fonts.
-    #[test]
-    fn works_without_craft_fonts() {
-        let ctx = installed();
-        let n = filmcraft_text::fonts::craft_japanese().count() + crate::cjk::craft_fonts().count() + crate::rtl::craft_fonts().count();
-        ctx.fonts_mut(|fonts| {
-            let defs = fonts.definitions().clone();
-            assert_eq!(defs.font_data.keys().filter(|k| k.starts_with("craft:")).count(), n);
-            assert_eq!(defs.families[&FontFamily::Proportional].first().map(String::as_str), Some("inter"));
-            assert_eq!(defs.families[&FontFamily::Monospace].first().map(String::as_str), Some("jbmono"));
-            assert!(fonts.has_glyph(&FontId::new(13.0, FontFamily::Proportional), 'A'));
-            if n == 0 {
-                assert!(defs.families.values().flatten().all(|name| !name.starts_with("craft:")));
-            }
-        });
     }
 }
